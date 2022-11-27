@@ -36,12 +36,11 @@ const Histogram = ({arr}) => {
 
     var options = {
         maintainAspectRatio: false,
-        scales: {},
-        legend: {
-            labels: {
-                fontSize: 25,
-            },
+        scales: {
+            x: {title: {display: true, text: 'Words'}},
+            y: {title: {display: true, text: 'Frequency'}}
         },
+        legend: {labels: {fontSize: 25}},
     };
 
     return (

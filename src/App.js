@@ -1,7 +1,5 @@
 import './App.css';
-import {
-    useState
-} from "react";
+import {useState, useEffect} from "react";
 import Histogram from './Histogram';
 
 const links = {
@@ -57,44 +55,49 @@ var result = [];
 function App() {
     const [data, setData] = useState("");
     const [graph, setgraph] = useState(false);
-    // const [received, setReceived] = useState(false);
     const [freqWord, setFreqWord] = useState([]);
-    const fetchData = async () => {
-        await fetch('https://www.terriblytinytales.com/test.txt')
-            .then(response => {
-                return response.text()
-            }).then(d => {
+
+    const displayData = () => {
+        let arr = data.split('\n').filter(e => e !== "");
+        let ans = [];
+        for (let i = 0; i < arr.length; i++) {
+            let temp = arr[i].split(' ');
+
+            for (let j = 0; j < temp.length; j++) {
+                if (temp[j].includes(links.Youtube)) temp[j] = 'Youtube Link';
+                if (temp[j].includes(links.Facebook)) temp[j] = 'Facebook Link';
+                if (temp[j].includes(links.Instagram)) temp[j] = 'Instagram Link';
+                if (temp[j].includes(links.Contact)) temp[j] = 'Contact Mail';
+                if (temp[j].includes(links.Collab)) temp[j] = 'Collab Mail';
+                if (temp[j].includes(links.Events)) temp[j] = 'Events Mail';
+                if (temp[j].includes(links.Testing)) temp[j] = 'Testing Link';
+                if (temp[j].includes(links.Twitter)) temp[j] = 'Twitter Link';
+            }
+
+            for (let j = 0; j < temp.length; j++) {
+                temp[j] = temp[j].replace(/[^\w\s\\']|_/g, "").replace(/\s+/g, " ");
+                ans.push(temp[j]);
+            }
+        }
+        ans = ans.filter(e => e !== "");
+        ans = setWordsLowerCase(ans);
+        const freqMap = getFrequency(ans);
+        result = get20MostFrequentWords(freqMap);
+        setFreqWord(result);
+    }
+    
+    useEffect(() => {
+        displayData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [data]);
+
+    const fetchData = () => {
+         fetch('https://www.terriblytinytales.com/test.txt')
+            .then(response => {return response.text()}).then(d => {
                 setData(d);
-            }).then(() => {
-                let arr = data.split('\n').filter(e => e !== "");
-                let ans = [];
-                for (let i = 0; i < arr.length; i++) {
-                    let temp = arr[i].split(' ');
-
-                    for (let j = 0; j < temp.length; j++) {
-                        if (temp[j].includes(links.Youtube)) temp[j] = 'Youtube Link';
-                        if (temp[j].includes(links.Facebook)) temp[j] = 'Facebook Link';
-                        if (temp[j].includes(links.Instagram)) temp[j] = 'Instagram Link';
-                        if (temp[j].includes(links.Contact)) temp[j] = 'Contact Mail';
-                        if (temp[j].includes(links.Collab)) temp[j] = 'Collab Mail';
-                        if (temp[j].includes(links.Events)) temp[j] = 'Events Mail';
-                        if (temp[j].includes(links.Testing)) temp[j] = 'Testing Link';
-                        if (temp[j].includes(links.Twitter)) temp[j] = 'Twitter Link';
-                    }
-
-                    for (let j = 0; j < temp.length; j++) {
-                        temp[j] = temp[j].replace(/[^\w\s\\']|_/g, "").replace(/\s+/g, " ");
-                        ans.push(temp[j]);
-                    }
-
-                }
-                ans = ans.filter(e => e !== "");
-                // console.log(ans);
-                ans = setWordsLowerCase(ans);
-                const freqMap = getFrequency(ans);
-                result = get20MostFrequentWords(freqMap);
-                setFreqWord(result);
-
+            })
+            .then(()=>{
+                displayData();
             })
         setgraph(graph => "true")
     }
