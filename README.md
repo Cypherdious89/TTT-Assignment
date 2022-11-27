@@ -16,6 +16,7 @@ App.js consists of the following functions which is created for code implementat
   3. __setWordsLowerCase__ : Here we set all the words to lower case to have consistent data for the mixed cased words.
   4. __getFrequency__ : Here we create a hashmap and store the key value pairs of word and their frequency.
   5. __get20MostFrequentWords__ : Here we are sorting the map and storing top 20 most frequent words in the result array. The top 20 words from the fetched data are :
+        
         1: {word: 'i', frequency: 27}
 
         2: {word: 'a', frequency: 23}
